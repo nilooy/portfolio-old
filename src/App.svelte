@@ -78,6 +78,40 @@
   composer.addPass(renderScene);
   composer.addPass(bloomPass);
 
+  var vertices = [];
+
+  for (var i = 0; i < 10000; i++) {
+    var x = THREE.MathUtils.randFloatSpread(2000);
+    var y = THREE.MathUtils.randFloatSpread(2000);
+    var z = THREE.MathUtils.randFloatSpread(2000);
+
+    vertices.push(x, y, z);
+  }
+
+  // moon
+  var moonGeometry = new THREE.SphereGeometry(1, 3);
+  var materialMoon = new THREE.MeshPhongMaterial({
+    color: 0xf0ff00,
+    wireframe: true
+  });
+
+  var meshMoon = new THREE.Mesh(moonGeometry, materialMoon);
+  meshMoon.position.set(-3.2, 1.5, 0);
+  meshMoon.scale.set(0.2, 0.2, 0.2);
+  scene.add(meshMoon);
+
+  var geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(vertices, 3)
+  );
+
+  var material = new THREE.PointsMaterial({ color: 0x888888 });
+
+  var points = new THREE.Points(geometry, material);
+
+  scene.add(points);
+
   var loader = new GLTFLoader();
 
   loader.load(
@@ -202,7 +236,7 @@
     top: 20%;
     left: 200px;
   }
-  .banner-content h1 {
+  /* .banner-content h1 {
     font-size: 300px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: 100;
@@ -211,12 +245,288 @@
     font-size: 100px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: 100;
+  } */
+
+  .glow {
+    font-size: 80px;
+    color: #fff;
+    text-align: center;
+    -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate;
+  }
+
+  @-webkit-keyframes glow {
+    from {
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #50a00f,
+        0 0 40px #50a00f, 0 0 50px #50a00f, 0 0 60px #50a00f, 0 0 70px #50a00f;
+    }
+
+    to {
+      text-shadow: 0 0 20px #fff, 0 0 30px #33d31e, 0 0 40px #33d31e,
+        0 0 50px #33d31e, 0 0 60px #33d31e, 0 0 70px #33d31e, 0 0 80px #33d31e;
+    }
+  }
+
+  .glitch {
+    position: relative;
+    color: white;
+    font-size: 6em;
+    letter-spacing: 0.2em;
+    /* Animation provies a slight random skew. Check bottom of doc
+  for more information on how to random skew. */
+    animation: glitch-skew 1s infinite linear alternate-reverse;
+  }
+
+  h1.glitch {
+    font-size: 20em;
+  }
+
+  .glitch::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    left: 2px;
+    text-shadow: -2px 0 #ff00c1;
+    /* Creates an initial clip for our glitch. This works in
+  a typical top,right,bottom,left fashion and creates a mask
+  to only show a certain part of the glitch at a time. */
+    clip: rect(44px, 450px, 56px, 0);
+    /* Runs our glitch-anim defined below to run in a 5s loop, infinitely,
+  with an alternating animation to keep things fresh. */
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+  }
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    left: -2px;
+    text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+    animation: glitch-anim2 1s infinite linear alternate-reverse;
+  }
+
+  /* Creates an animation with 20 steaps. For each step, it calculates 
+a percentage for the specific step. It then generates a random clip
+box to be used for the random glitch effect. Also adds a very subtle
+skew to change the 'thickness' of the glitch.*/
+  @keyframes glitch-anim {
+    0% {
+      clip: rect(51px, 9999px, 24px, 0);
+      transform: skew(0.92deg);
+    }
+    5% {
+      clip: rect(56px, 9999px, 99px, 0);
+      transform: skew(0.27deg);
+    }
+    10% {
+      clip: rect(39px, 9999px, 50px, 0);
+      transform: skew(1deg);
+    }
+    15% {
+      clip: rect(99px, 9999px, 100px, 0);
+      transform: skew(0.29deg);
+    }
+    20% {
+      clip: rect(39px, 9999px, 36px, 0);
+      transform: skew(0.35deg);
+    }
+    25% {
+      clip: rect(93px, 9999px, 79px, 0);
+      transform: skew(0.34deg);
+    }
+    30% {
+      clip: rect(26px, 9999px, 23px, 0);
+      transform: skew(0.76deg);
+    }
+    35% {
+      clip: rect(9px, 9999px, 30px, 0);
+      transform: skew(0.76deg);
+    }
+    40% {
+      clip: rect(53px, 9999px, 24px, 0);
+      transform: skew(0.21deg);
+    }
+    45% {
+      clip: rect(40px, 9999px, 61px, 0);
+      transform: skew(0.26deg);
+    }
+    50% {
+      clip: rect(51px, 9999px, 31px, 0);
+      transform: skew(0.69deg);
+    }
+    55% {
+      clip: rect(84px, 9999px, 37px, 0);
+      transform: skew(0.09deg);
+    }
+    60% {
+      clip: rect(27px, 9999px, 36px, 0);
+      transform: skew(0.14deg);
+    }
+    65% {
+      clip: rect(84px, 9999px, 97px, 0);
+      transform: skew(0.42deg);
+    }
+    70% {
+      clip: rect(24px, 9999px, 61px, 0);
+      transform: skew(0.08deg);
+    }
+    75% {
+      clip: rect(32px, 9999px, 75px, 0);
+      transform: skew(0.51deg);
+    }
+    80% {
+      clip: rect(97px, 9999px, 85px, 0);
+      transform: skew(0.91deg);
+    }
+    85% {
+      clip: rect(14px, 9999px, 18px, 0);
+      transform: skew(0.03deg);
+    }
+    90% {
+      clip: rect(74px, 9999px, 15px, 0);
+      transform: skew(0.56deg);
+    }
+    95% {
+      clip: rect(84px, 9999px, 25px, 0);
+      transform: skew(0.35deg);
+    }
+    100% {
+      clip: rect(21px, 9999px, 37px, 0);
+      transform: skew(0.33deg);
+    }
+  }
+  @keyframes glitch-anim2 {
+    0% {
+      clip: rect(55px, 9999px, 33px, 0);
+      transform: skew(0.42deg);
+    }
+    5% {
+      clip: rect(64px, 9999px, 64px, 0);
+      transform: skew(0.88deg);
+    }
+    10% {
+      clip: rect(22px, 9999px, 37px, 0);
+      transform: skew(0.92deg);
+    }
+    15% {
+      clip: rect(20px, 9999px, 15px, 0);
+      transform: skew(0.02deg);
+    }
+    20% {
+      clip: rect(66px, 9999px, 20px, 0);
+      transform: skew(0.64deg);
+    }
+    25% {
+      clip: rect(50px, 9999px, 7px, 0);
+      transform: skew(0.14deg);
+    }
+    30% {
+      clip: rect(45px, 9999px, 69px, 0);
+      transform: skew(0.05deg);
+    }
+    35% {
+      clip: rect(9px, 9999px, 77px, 0);
+      transform: skew(0.61deg);
+    }
+    40% {
+      clip: rect(23px, 9999px, 82px, 0);
+      transform: skew(0.5deg);
+    }
+    45% {
+      clip: rect(34px, 9999px, 34px, 0);
+      transform: skew(0.27deg);
+    }
+    50% {
+      clip: rect(79px, 9999px, 66px, 0);
+      transform: skew(0.55deg);
+    }
+    55% {
+      clip: rect(3px, 9999px, 26px, 0);
+      transform: skew(0.32deg);
+    }
+    60% {
+      clip: rect(50px, 9999px, 75px, 0);
+      transform: skew(0.03deg);
+    }
+    65% {
+      clip: rect(73px, 9999px, 41px, 0);
+      transform: skew(0.53deg);
+    }
+    70% {
+      clip: rect(78px, 9999px, 10px, 0);
+      transform: skew(0.04deg);
+    }
+    75% {
+      clip: rect(12px, 9999px, 4px, 0);
+      transform: skew(0.24deg);
+    }
+    80% {
+      clip: rect(27px, 9999px, 5px, 0);
+      transform: skew(0.87deg);
+    }
+    85% {
+      clip: rect(16px, 9999px, 86px, 0);
+      transform: skew(0.82deg);
+    }
+    90% {
+      clip: rect(15px, 9999px, 84px, 0);
+      transform: skew(0.62deg);
+    }
+    95% {
+      clip: rect(88px, 9999px, 88px, 0);
+      transform: skew(0.68deg);
+    }
+    100% {
+      clip: rect(79px, 9999px, 6px, 0);
+      transform: skew(0.08deg);
+    }
+  }
+  @keyframes glitch-skew {
+    0% {
+      transform: skew(-1deg);
+    }
+    10% {
+      transform: skew(-1deg);
+    }
+    20% {
+      transform: skew(-1deg);
+    }
+    30% {
+      transform: skew(-1deg);
+    }
+    40% {
+      transform: skew(5deg);
+    }
+    50% {
+      transform: skew(-3deg);
+    }
+    60% {
+      transform: skew(-3deg);
+    }
+    70% {
+      transform: skew(2deg);
+    }
+    80% {
+      transform: skew(5deg);
+    }
+    90% {
+      transform: skew(-4deg);
+    }
+    100% {
+      transform: skew(2deg);
+    }
   }
 </style>
 
 <div class="banner-content">
-  <h1>Hi!</h1>
-  <h2>I'm Niloy</h2>
+  <h1 class="glitch" data-text="Hi!">Hi!</h1>
+  <h2 class="glitch" data-text="I'm Niloy">I'm Niloy</h2>
 </div>
 
 <h2>asdasd</h2>
