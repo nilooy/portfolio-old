@@ -14,7 +14,8 @@
     waist,
     mixamorigRightHand,
     mixamorigRightForeArm,
-    mixamorigRightArm;
+    mixamorigRightArm,
+    mixamorigLeftLeg;
 
   var params = {
     exposure: 1,
@@ -25,9 +26,9 @@
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(
-    75,
+    40,
     window.innerWidth / window.innerHeight,
-    0.1,
+    1,
     1000
   );
 
@@ -57,15 +58,15 @@
 
   const stacy_mtl = new THREE.MeshPhongMaterial({
     color: 0x00ff00,
-    skinning: true
-    // wireframe: true
+    skinning: true,
+    wireframe: true
   });
 
   var renderScene = new RenderPass(scene, camera);
 
   var bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-    1.5,
+    0.5,
     0.4,
     0.85
   );
@@ -85,6 +86,8 @@
       var obj = gltf.scene;
 
       obj.position.set(0, 0, 0);
+      obj.position.x = 1.3;
+      obj.position.y = -1.5;
 
       obj.traverse(o => {
         if (o.isMesh) {
@@ -110,36 +113,27 @@
           mixamorigRightArm = o;
           mixamorigRightArm.rotation.z = THREE.MathUtils.degToRad(-60);
         }
+        if (o.isBone && o.name === "mixamorigLeftLeg") {
+          mixamorigLeftLeg = o;
+        }
       });
 
       //   mixamorigRightForeArm.rotation.y = THREE.Math.degToRad(10);
       //   mixamorigRightForeArm.rotation.x = THREE.Math.degToRad(29);
       //   mixamorigRightForeArm.rotation.z = THREE.Math.degToRad(-149);
 
-      //   TweenMax.from(mixamorigRightArm.rotation, 0.8, {
-      //     z: THREE.Math.degToRad(-59),
-      //     yoyo: true,
-      //     repeat: -1
-      //   });
-
-      //   TweenMax.from(composer.passes[1], 4, {
-      //     threshold: 0.3,
-      //     yoyo: true,
-      //     repeat: -1,
-      //     ease: "power1.none"
-      //   });
       TweenMax.from(composer.passes[1], 2, {
         radius: 2,
         yoyo: true,
         repeat: -1,
-        ease: "power1.none"
+        ease: "Power2.easeInOut"
       });
 
       TweenMax.from(composer.passes[1], 2, {
         strength: 2,
         yoyo: true,
         repeat: -1,
-        ease: "power1.none"
+        ease: "Power2.easeInOut"
       });
 
       TweenMax.from(mixamorigRightForeArm.rotation, 0.5, {
@@ -149,11 +143,16 @@
         ease: "power1.none"
       });
 
-      TweenMax.from(obj.position, 2, {
-        y: -0.5,
+      TweenMax.to(mixamorigLeftLeg.rotation, 0.5, {
+        x: THREE.Math.degToRad(-30),
         yoyo: true,
-        repeat: -1,
-        ease: "Power2.easeInOut"
+
+        ease: "power1.none"
+      });
+
+      TweenMax.from(obj.position, 3, {
+        y: 1.9,
+        ease: "expo.out"
       });
 
       scene.add(obj);
@@ -184,4 +183,40 @@
   animate();
 </script>
 
-<h1>Hello</h1>
+<style>
+  h1,
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .banner-content {
+    position: absolute;
+    color: white;
+    text-align: left;
+    top: 20%;
+    left: 200px;
+  }
+  .banner-content h1 {
+    font-size: 300px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 100;
+  }
+  .banner-content h2 {
+    font-size: 100px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 100;
+  }
+</style>
+
+<div class="banner-content">
+  <h1>Hi!</h1>
+  <h2>I'm Niloy</h2>
+</div>
+
+<h2>asdasd</h2>
