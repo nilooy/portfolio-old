@@ -80,16 +80,6 @@
   composer.addPass(renderScene);
   composer.addPass(bloomPass);
 
-  var vertices = [];
-
-  for (var i = 0; i < 10000; i++) {
-    var x = THREE.MathUtils.randFloatSpread(2000);
-    var y = THREE.MathUtils.randFloatSpread(2000);
-    var z = THREE.MathUtils.randFloatSpread(2000);
-
-    vertices.push(x, y, z);
-  }
-
   // moon
   var moonGeometry = new THREE.SphereGeometry(1, 3);
   var materialMoon = new THREE.MeshPhongMaterial({
@@ -104,7 +94,7 @@
 
   // stars
   let starsPos = [];
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 50; i++) {
     starsPos.push(
       new THREE.Vector3(
         THREE.Math.randFloatSpread(20),
@@ -169,8 +159,6 @@
           o.material = stacy_mtl;
         }
 
-        console.log(o.name);
-
         if (o.isBone && o.name === "mixamorigNeck") {
           neck = o;
         }
@@ -216,6 +204,15 @@
         repeat: -1,
         ease: "power1.none"
       });
+
+      setTimeout(() => {
+        TweenMax.to(obj.position, 2, {
+          y: -1,
+          yoyo: true,
+          repeat: -1,
+          ease: "Power2.easeInOut"
+        });
+      }, 1500);
 
       TweenMax.to(mixamorigLeftLeg.rotation, 0.5, {
         x: THREE.Math.degToRad(-30),
@@ -274,6 +271,13 @@
 
   camera.position.z = 5;
 
+  window.onresize = function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  };
+
   var animate = function() {
     time = performance.now() / 1000;
 
@@ -283,6 +287,10 @@
     requestAnimationFrame(animate);
   };
 
+  console.log("Hello, Wass up!");
+  console.log("Need anything!");
+  console.log("Why are you here?");
+
   animate();
 </script>
 
@@ -291,6 +299,10 @@
   h2 {
     margin: 0;
     padding: 0;
+  }
+
+  * {
+    cursor: crosshair;
   }
 
   canvas {
@@ -304,35 +316,6 @@
     text-align: left;
     top: 20%;
     left: 200px;
-  }
-
-  .btn-box {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    right: 0;
-    top: 10%;
-  }
-
-  .glow {
-    font-size: 80px;
-    color: #fff;
-    text-align: center;
-    -webkit-animation: glow 1s ease-in-out infinite alternate;
-    -moz-animation: glow 1s ease-in-out infinite alternate;
-    animation: glow 1s ease-in-out infinite alternate;
-  }
-
-  @-webkit-keyframes glow {
-    from {
-      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #50a00f,
-        0 0 40px #50a00f, 0 0 50px #50a00f, 0 0 60px #50a00f, 0 0 70px #50a00f;
-    }
-
-    to {
-      text-shadow: 0 0 20px #fff, 0 0 30px #33d31e, 0 0 40px #33d31e,
-        0 0 50px #33d31e, 0 0 60px #33d31e, 0 0 70px #33d31e, 0 0 80px #33d31e;
-    }
   }
 
   .glitch {
@@ -585,17 +568,100 @@
       transform: skew(2deg);
     }
   }
+
+  .glow-text {
+    text-decoration: none;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+    animation: neonGlow 2s infinite alternate
+      cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  }
+
+  @keyframes neonGlow {
+    0% {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.8), 0 0 22px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(66, 220, 219, 0.8), 0 0 60px rgba(66, 220, 219, 0.8),
+        0 0 80px rgba(66, 220, 219, 0.5), 0 0 100px rgba(66, 220, 219, 0.5),
+        0 0 140px rgba(66, 220, 219, 0.5), 0 0 200px rgba(66, 220, 219, 0.5);
+    }
+    100% {
+      text-shadow: 0 0 2px rgba(255, 255, 255, 0.8),
+        0 0 8px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(66, 220, 219, 0.8), 0 0 30px rgba(66, 220, 219, 0.8),
+        0 0 40px rgba(66, 220, 219, 0.8), 0 0 50px rgba(66, 220, 219, 0.5),
+        0 0 80px rgba(66, 220, 219, 0.5);
+    }
+  }
+
+  .btn-box {
+    display: flex;
+    position: fixed;
+    position: absolute;
+    bottom: 10px; /* position the top  edge of the element at the middle of the parent */
+    left: 50%; /* position the left edge of the element at the middle of the parent */
+    transform: translate(-50%, -50%);
+    justify-content: space-between;
+  }
+  .btn-box a {
+    margin: 5px;
+    border-bottom: 1px solid #fff;
+    padding: 15px;
+    transition: 0.5s;
+  }
+  .btn-box a:hover {
+    transform: translateY(-4px);
+  }
+
+  h3.glitch {
+    font-size: 25px !important;
+  }
+  h4.glitch {
+    font-size: 14px !important;
+  }
+
+  @media (max-width: 1500px) {
+    .banner-content h1 {
+      font-size: 4em !important;
+    }
+    h3.glitch {
+      font-size: 18px !important;
+    }
+    h4.glitch {
+      font-size: 14px !important;
+    }
+    .glow-text {
+      font-size: 18px;
+    }
+  }
 </style>
 
 <div class="banner-content">
   <h1>Hi!</h1>
   <h2 class="glitch" data-text="I'm Niloy">I'm Niloy</h2>
+  <h3 class="glitch " data-text="a Full-stack Developer">
+    a Full-stack Developer
+  </h3>
+  <h4 class="glitch " data-text="a Full-stack Developer">
+    The site is under development. It's online just for reference.
+    <br />
+    <br />
+    It's not mobile optimized yet!!
+  </h4>
 </div>
 
 <div class="btn-box">
-  <button on:click={rotateChar}>rotate</button>
-  <button on:click={flyMode}>flyMode</button>
-  <button on:click={moveChar}>moveChar</button>
+  <a class="glow-text" download href="rezwan_ferdous_niloy_cv_en.pdf">
+    Download My Resume
+  </a>
+  <a target="_blank" class="glow-text" href="https://github.com/theprogboy">
+    Github
+  </a>
+  <a
+    target="_blank"
+    class="glow-text"
+    href="https://www.linkedin.com/in/rezwanferdousniloy/">
+    Linkedin
+  </a>
 </div>
-
-<h2>asdasd</h2>

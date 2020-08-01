@@ -16,8 +16,7 @@
     mixamorigRightForeArm,
     mixamorigRightArm,
     mixamorigLeftLeg,
-    obj,
-    materialShader;
+    obj;
 
   var params = {
     exposure: 1,
@@ -102,54 +101,17 @@
   meshMoon.scale.set(0.2, 0.2, 0.2);
   scene.add(meshMoon);
 
-  // stars
-  let starsPos = [];
-  for (let i = 0; i < 1000; i++) {
-    starsPos.push(
-      new THREE.Vector3(
-        THREE.Math.randFloatSpread(20),
-        THREE.Math.randFloatSpread(20),
-        THREE.Math.randFloatSpread(20)
-      )
-    );
-  }
+  var geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(vertices, 3)
+  );
 
-  //=================================================>
-  // stars
-  //=================================================>
+  var material = new THREE.PointsMaterial({ color: 0x888888 });
 
-  let starsGeom = new THREE.BufferGeometry().setFromPoints(starsPos);
+  var points = new THREE.Points(geometry, material);
 
-  let starsMat = new THREE.PointsMaterial({ size: 0.1, color: "white" });
-  starsMat.color.setHSL(1.0, 0.3, 0.7);
-
-  starsMat.onBeforeCompile = shader => {
-    shader.uniforms.time = { value: 0 };
-    shader.uniforms.speed = { value: 110 };
-    shader.vertexShader =
-      `
-  uniform float time;
-  uniform float speed;
-  ` + shader.vertexShader;
-    shader.vertexShader = shader.vertexShader.replace(
-      `#include <begin_vertex>`,
-      `
-    vec3 transformed = vec3( position );
-    transformed.z = mod(10.0 + position.z + (speed * time), 20.) - 10.;
-    `
-    );
-    materialShader = shader;
-  };
-
-  let stars = new THREE.Points(starsGeom, starsMat);
-  scene.add(stars);
-
-  var time = 0;
-  var greetAnimation;
-
-  //=================================================>
-  // Starts
-  //=================================================>
+  scene.add(points);
 
   var loader = new GLTFLoader();
 
@@ -210,7 +172,7 @@
         ease: "Power2.easeInOut"
       });
 
-      greetAnimation = TweenMax.from(mixamorigRightForeArm.rotation, 0.5, {
+      TweenMax.from(mixamorigRightForeArm.rotation, 0.5, {
         z: THREE.Math.degToRad(-109),
         yoyo: true,
         repeat: -1,
@@ -246,14 +208,6 @@
     console.log(obj.y);
     obj.rotation.y = THREE.Math.degToRad(180);
     obj.rotation.x = THREE.Math.degToRad(-40);
-    TweenMax.from(obj.position, 1, {
-      y: -1,
-      yoyo: true,
-      repeat: -1,
-      ease: "power1.none",
-      ease: "Power2.easeInOut"
-    });
-    greetAnimation.pause();
   }
 
   function moveChar() {
@@ -275,12 +229,10 @@
   camera.position.z = 5;
 
   var animate = function() {
-    time = performance.now() / 1000;
-
-    if (materialShader) materialShader.uniforms.time.value = time;
-
-    composer.render();
     requestAnimationFrame(animate);
+
+    // renderer.render(scene, camera);
+    composer.render();
   };
 
   animate();
